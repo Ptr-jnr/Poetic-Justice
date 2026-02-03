@@ -3,16 +3,18 @@ import { motion } from 'framer-motion';
 
 const ComposeLetter = ({ onSend, onCancel }) => {
     const [content, setContent] = useState('');
+    const [recipient, setRecipient] = useState('');
     const [isSending, setIsSending] = useState(false);
 
     const handleSend = () => {
-        if (!content.trim()) return;
+        if (!content.trim() || !recipient.trim()) return;
         setIsSending(true);
 
         // Simulate "folding" time before actually sending
         setTimeout(() => {
             onSend({
                 content,
+                recipient,
                 date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
                 title: "My Longing Heart" // Default title or could add input
             });
@@ -61,7 +63,26 @@ const ComposeLetter = ({ onSend, onCancel }) => {
                 </div>
             ) : (
                 <>
-                    <h2 style={{ fontSize: '3rem', marginBottom: '20px', borderBottom: '1px solid #e6dace' }}>New Letter</h2>
+                    <h2 style={{ fontSize: '3rem', marginBottom: '10px', borderBottom: '1px solid #e6dace' }}>New Letter</h2>
+
+                    <input
+                        type="text"
+                        value={recipient}
+                        onChange={(e) => setRecipient(e.target.value)}
+                        placeholder="To whom is this addressed?"
+                        style={{
+                            width: '100%',
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                            borderBottom: '1px solid #e6dace',
+                            fontSize: '1.8rem',
+                            fontFamily: 'var(--font-heading)',
+                            marginBottom: '20px',
+                            outline: 'none',
+                            color: 'var(--color-text)',
+                            opacity: 0.8
+                        }}
+                    />
 
                     <textarea
                         value={content}
@@ -103,7 +124,7 @@ const ComposeLetter = ({ onSend, onCancel }) => {
                         </button>
                         <button
                             onClick={handleSend}
-                            disabled={!content.trim()}
+                            disabled={!content.trim() || !recipient.trim()}
                             style={{
                                 fontSize: '1.5rem',
                                 padding: '10px 30px',
@@ -111,7 +132,7 @@ const ComposeLetter = ({ onSend, onCancel }) => {
                                 color: '#fff',
                                 borderRadius: '4px',
                                 fontFamily: 'var(--font-heading)',
-                                opacity: content.trim() ? 1 : 0.5
+                                opacity: (content.trim() && recipient.trim()) ? 1 : 0.5
                             }}
                         >
                             Send Letter

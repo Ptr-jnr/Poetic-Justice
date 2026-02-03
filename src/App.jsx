@@ -26,9 +26,11 @@ function App() {
     if (!identity) return;
 
     const fetchLetters = async () => {
+      // Fetch letters where I am the recipient OR I am the sender
       const { data, error } = await supabase
         .from('letters')
         .select('*')
+        .or(`recipient_name.eq.${identity},sender_name.eq.${identity}`)
         .order('created_at', { ascending: false });
 
       if (data) setLetters(data);
@@ -40,7 +42,11 @@ function App() {
     const channel = supabase
       .channel('public:letters')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'letters' }, (payload) => {
-        setLetters((prev) => [payload.new, ...prev]);
+        // Only add if relevant to me
+        const newLetter = payload.new;
+        if (newLetter.recipient_name === identity || newLetter.sender_name === identity) {
+          setLetters((prev) => [newLetter, ...prev]);
+        }
       })
       .subscribe();
 
@@ -57,7 +63,7 @@ function App() {
       content: newLetterData.content,
       date: newLetterData.date,
       sender_name: identity,
-      recipient_name: "My Love", // For now broadcasting to everyone or specific
+      recipient_name: newLetterData.recipient,
       is_read: false
     };
 
@@ -65,7 +71,7 @@ function App() {
 
     if (error) {
       console.error('Error sending letter:', error);
-      alert("Failed to send letter via carrier pigeon (network error).");
+      alert(`Failed to send letter: ${error.message || error.error_description || "Network error"}`);
     } else {
       setViewMode('read');
       setActiveTab('sent');
@@ -78,7 +84,7 @@ function App() {
   // "Sent" = Letters sent BY me
   const visibleLetters = letters.filter(l => {
     if (activeTab === 'inbox') {
-      return l.sender_name !== identity;
+      return l.recipient_name === identity;
     } else {
       return l.sender_name === identity;
     }
