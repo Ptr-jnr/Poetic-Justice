@@ -4,14 +4,19 @@
   /* Colors */
   --color-bg: #fdfbf7;
   --color-text: #2c241b;
-  --color-accent: #8a3324; /* Wax seal red */
-  --color-shoebox: #4a3b2a; /* Leather brown */
+  --color-accent: #8a3324;
+  /* Wax seal red */
+  --color-shoebox: #4a3b2a;
+  /* Leather brown */
   --color-shoebox-light: #5e4b35;
   --color-shoebox-text: #e6dace;
-  
+
   /* Fonts */
-  --font-heading: 'Pinyon Script', cursive;
-  --font-body: 'Pinyon Script', cursive; /* Using same for now, or maybe a readable serif */
+  --font-ui: 'Georgia', 'Times New Roman', serif;
+  --font-heading: 'Georgia', 'Times New Roman', serif;
+  /* UI Headings */
+  --font-letter: 'Pinyon Script', cursive;
+  /* The actual letter text */
   --font-handwriting: 'Mrs Saint Delafield', cursive;
 }
 
@@ -20,9 +25,10 @@ body {
   padding: 0;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-body);
-  overflow: hidden; /* For app-like feel */
-  background-image: 
+  font-family: var(--font-ui);
+  overflow: hidden;
+  /* For app-like feel */
+  background-image:
     radial-gradient(#e6d0b3 1px, transparent 1px),
     radial-gradient(#e6d0b3 1px, transparent 1px);
   background-size: 20px 20px;
@@ -34,15 +40,19 @@ body {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--color-shoebox);
   border-radius: 4px;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-heading);
   font-weight: 400;
   margin: 0;

@@ -95,9 +95,9 @@ const ComposeLetter = ({ onSend, onCancel }) => {
                             backgroundColor: 'transparent',
                             border: 'none',
                             outline: 'none',
-                            fontSize: '2rem',
-                            lineHeight: '1.6',
-                            fontFamily: 'var(--font-heading)',
+                            fontSize: '2.5rem',
+                            lineHeight: '1.4',
+                            fontFamily: 'var(--font-letter)',
                             resize: 'none',
                             minHeight: '400px',
                             color: 'var(--color-text)'

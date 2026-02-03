@@ -105,10 +105,11 @@ const Letter = ({ letter }) => {
                         </div>
 
                         <p style={{
-                            fontSize: '2rem',
-                            lineHeight: '1.6',
+                            fontSize: '2.5rem', /* Increased for legibility of cursive */
+                            lineHeight: '1.4',
                             textAlign: 'justify',
-                            whiteSpace: 'pre-line' // Respects newlines in content
+                            whiteSpace: 'pre-line', // Respects newlines in content
+                            fontFamily: 'var(--font-letter)'
                         }}>
                             {letter.content}
                         </p>
