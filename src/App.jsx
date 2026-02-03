@@ -1,87 +1,100 @@
 import { useState, useEffect } from 'react';
+import { supabase } from './supabaseClient';
 import ShoeBox from './components/ShoeBox';
 import Letter from './components/Letter';
 import ComposeLetter from './components/ComposeLetter';
+import Identity from './components/Identity';
 import './index.css';
 
-// Initial dummy data
-const INITIAL_INBOX = [
-  {
-    id: 1,
-    title: "The First Glimpse",
-    date: "June 14th, 1782",
-    content: "The days grow long without you. I find myself staring at the horizon, wondering if the wind that brushes my cheek has touched yours. Every sunset brings the promise of another dawn closer to our reunion."
-  },
-  {
-    id: 2,
-    title: "A Midnight Thought",
-    date: "July 2nd, 1782",
-    content: "Each moment apart feels like an eternity. The moon shines bright tonight, and I take comfort knowing we sleep under the same sky, though separated by miles of earth and sea."
-  },
-  {
-    id: 3,
-    title: "The Promise",
-    date: "August 10th, 1782",
-    content: "I shall return to you before the first snow falls. Hold fast to our memories, for they are the bridge that connects our souls until my arms can hold you once more."
-  }
-];
-
 function App() {
+  const [identity, setIdentity] = useState(() => localStorage.getItem('pj_identity'));
   const [viewMode, setViewMode] = useState('read'); // 'read' | 'compose'
   const [selectedLetter, setSelectedLetter] = useState(null);
   const [activeTab, setActiveTab] = useState('inbox'); // 'inbox' | 'sent'
 
-  // State for letters
-  const [inboxLetters, setInboxLetters] = useState(() => {
-    const saved = localStorage.getItem('pj_inbox');
-    return saved ? JSON.parse(saved) : INITIAL_INBOX;
-  });
+  const [letters, setLetters] = useState([]);
 
-  const [sentLetters, setSentLetters] = useState(() => {
-    const saved = localStorage.getItem('pj_sent');
-    return saved ? JSON.parse(saved) : [];
-  });
-
+  // Persist identity
   useEffect(() => {
-    localStorage.setItem('pj_inbox', JSON.stringify(inboxLetters));
-  }, [inboxLetters]);
+    if (identity) {
+      localStorage.setItem('pj_identity', identity);
+    }
+  }, [identity]);
 
+  // Fetch letters on load
   useEffect(() => {
-    localStorage.setItem('pj_sent', JSON.stringify(sentLetters));
-  }, [sentLetters]);
+    if (!identity) return;
 
-  const handleComposeClick = () => {
-    setViewMode('compose');
-    setSelectedLetter(null);
-  };
+    const fetchLetters = async () => {
+      const { data, error } = await supabase
+        .from('letters')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-  const handleSendLetter = (newLetterData) => {
-    const newLetter = {
-      id: Date.now(),
-      ...newLetterData,
-      isSent: true
+      if (data) setLetters(data);
     };
 
-    setSentLetters(prev => [newLetter, ...prev]);
-    setViewMode('read');
-    setActiveTab('sent');
-    setSelectedLetter(newLetter);
+    fetchLetters();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('public:letters')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'letters' }, (payload) => {
+        setLetters((prev) => [payload.new, ...prev]);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [identity]);
+
+  const handleSendLetter = async (newLetterData) => {
+    // Optimistic update (optional, but good for UX)
+    // Actually, let's just push to DB and let the subscription update the UI
+    const letterPayload = {
+      title: newLetterData.title,
+      content: newLetterData.content,
+      date: newLetterData.date,
+      sender_name: identity,
+      recipient_name: "My Love", // For now broadcasting to everyone or specific
+      is_read: false
+    };
+
+    const { error } = await supabase.from('letters').insert([letterPayload]);
+
+    if (error) {
+      console.error('Error sending letter:', error);
+      alert("Failed to send letter via carrier pigeon (network error).");
+    } else {
+      setViewMode('read');
+      setActiveTab('sent');
+      // We don't need to manually update state because the subscription will catch our own insert!
+    }
   };
 
-  const handleSelectLetter = (letter) => {
-    setViewMode('read');
-    setSelectedLetter(letter);
-  };
+  // Filter letters based on active tab and identity
+  // "Inbox" = Letters NOT sent by me (or sent TO me)
+  // "Sent" = Letters sent BY me
+  const visibleLetters = letters.filter(l => {
+    if (activeTab === 'inbox') {
+      return l.sender_name !== identity;
+    } else {
+      return l.sender_name === identity;
+    }
+  });
 
-  const visibleLetters = activeTab === 'inbox' ? inboxLetters : sentLetters;
+  if (!identity) {
+    return <Identity onIdentify={setIdentity} />;
+  }
 
   return (
     <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
       <ShoeBox
         letters={visibleLetters}
-        onSelectLetter={handleSelectLetter}
+        onSelectLetter={(l) => { setViewMode('read'); setSelectedLetter(l); }}
         selectedLetterId={selectedLetter?.id}
-        onCompose={handleComposeClick}
+        onCompose={() => { setViewMode('compose'); setSelectedLetter(null); }}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
