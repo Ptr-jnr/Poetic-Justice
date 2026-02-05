@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { supabase } from './supabaseClient';
 import ShoeBox from './components/ShoeBox';
 import Letter from './components/Letter';
@@ -90,14 +91,21 @@ function App() {
   const handleSendLetter = async (newLetterData) => {
     if (!username) return;
 
-    // Optimistic update (optional, but good for UX)
-    // Actually, let's just push to DB and let the subscription update the UI
+    // Logic: Peter writes to Merciful, Merciful writes to Peter
+    let recipient = null;
+    if (username === 'Peter') recipient = 'Merciful';
+    else if (username === 'Merciful') recipient = 'Peter';
+    else {
+      // Fallback for any other user (though we only expect these two)
+      recipient = 'Peter';
+    }
+
     const letterPayload = {
       title: newLetterData.title,
       content: newLetterData.content,
       date: newLetterData.date,
       sender_name: username,
-      recipient_name: newLetterData.recipient,
+      recipient_name: recipient,
       is_read: false
     };
 
@@ -123,7 +131,38 @@ function App() {
   });
 
   if (loading) {
-    return <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Loading Parchment...</div>;
+    return (
+      <div style={{
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundImage: "url('/paper_texture.jpg')",
+        backgroundSize: 'cover'
+      }}>
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 5, -5, 0]
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          style={{ fontSize: '8rem', marginBottom: '20px', filter: 'sepia(0.5)' }}
+        >
+          🪶
+        </motion.div>
+        <p style={{
+          fontSize: '1.5rem',
+          fontFamily: 'serif',
+          letterSpacing: '0.3em',
+          textTransform: 'uppercase',
+          opacity: 0.6
+        }}>
+          Unrolling the Parchment...
+        </p>
+      </div>
+    );
   }
 
   if (!session || !username) {
@@ -131,7 +170,43 @@ function App() {
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', position: 'relative' }}>
+      {/* Background Depth Decor */}
+      <div style={{
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        pointerEvents: 'none',
+        zIndex: 1,
+        opacity: 0.2,
+        overflow: 'hidden'
+      }}>
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            animate={{
+              y: [0, -100, 0],
+              x: [0, 50, 0],
+              opacity: [0.1, 0.3, 0.1]
+            }}
+            transition={{
+              duration: 15 + i * 5,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            style={{
+              position: 'absolute',
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: '2px',
+              height: '40px',
+              backgroundColor: 'var(--color-gold)',
+              filter: 'blur(2px)',
+              transform: `rotate(${Math.random() * 360}deg)`
+            }}
+          />
+        ))}
+      </div>
+
       <ShoeBox
         letters={visibleLetters}
         onSelectLetter={(l) => { setViewMode('read'); setSelectedLetter(l); }}
@@ -140,6 +215,7 @@ function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         username={username}
+        onSignOut={() => supabase.auth.signOut()}
       />
 
       <div style={{
@@ -149,7 +225,9 @@ function App() {
         boxShadow: 'inset 0 0 100px rgba(0,0,0,0.1)',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'flex-start', // Top-align for scrolling
+        overflowY: 'auto',
+        padding: '60px 0' // Vertical padding for parchment breathing room
       }}>
         {viewMode === 'compose' ? (
           <ComposeLetter
@@ -157,30 +235,9 @@ function App() {
             onCancel={() => setViewMode('read')}
           />
         ) : (
-          <Letter letter={selectedLetter} />
+          <Letter letter={selectedLetter} onClose={() => setSelectedLetter(null)} />
         )}
       </div>
-
-      {/* Logout Button (Small aesthetic implementation) */}
-      <button
-        onClick={() => supabase.auth.signOut()}
-        style={{
-          position: 'absolute',
-          bottom: '20px',
-          right: '20px',
-          padding: '10px 20px',
-          background: 'var(--color-accent)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          fontFamily: 'var(--font-heading)',
-          fontSize: '1.2rem',
-          cursor: 'pointer',
-          zIndex: 100
-        }}
-      >
-        Sign Out
-      </button>
     </div>
   );
 }

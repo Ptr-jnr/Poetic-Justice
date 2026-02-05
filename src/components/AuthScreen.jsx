@@ -63,36 +63,45 @@ const AuthScreen = ({ onLogin }) => {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: 'var(--color-bg)',
-            backgroundImage: `
-          radial-gradient(#e6d0b3 1px, transparent 1px),
-          radial-gradient(#e6d0b3 1px, transparent 1px)
-      `,
-            backgroundSize: '20px 20px',
-            backgroundPosition: '0 0, 10px 10px'
+            backgroundImage: `url('/paper_texture.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
         }}>
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 style={{
                     padding: '60px',
-                    backgroundColor: '#fdfbf7',
-                    boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+                    backgroundColor: 'rgba(253, 251, 247, 0.9)',
+                    backdropFilter: 'blur(5px)',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                     textAlign: 'center',
                     maxWidth: '500px',
                     width: '90%',
-                    border: '1px solid #e6dace'
+                    border: '1px solid #c2a685',
+                    borderRadius: '2px'
                 }}
             >
-                <h1 style={{ fontSize: '3.5rem', marginBottom: '10px' }}>
-                    {isLogin ? "Welcome Back" : "Join the Registry"}
+                <h1 style={{
+                    fontSize: '3rem',
+                    marginBottom: '10px',
+                    color: 'var(--color-shoebox)',
+                    letterSpacing: '0.05em'
+                }}>
+                    {isLogin ? "Deeply Missed" : "Begin the Journey"}
                 </h1>
-                <p style={{ fontSize: '1.2rem', marginBottom: '30px', opacity: 0.7 }}>
-                    {isLogin ? "Enter your credentials to retrieve your letters." : "Create your identity to begin corresponding."}
+                <p style={{
+                    fontSize: '1.2rem',
+                    marginBottom: '40px',
+                    opacity: 0.5,
+                    fontStyle: 'italic'
+                }}>
+                    {isLogin ? "Reunite with your shared memories." : "Create your identity to begin your correspondence."}
                 </p>
 
-                {error && <div style={{ color: 'red', marginBottom: '20px' }}>{error}</div>}
+                {error && <div style={{ color: 'var(--color-accent)', marginBottom: '25px', fontSize: '0.9rem' }}>{error}</div>}
 
-                <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
 
                     <input
                         type="email"
@@ -101,13 +110,17 @@ const AuthScreen = ({ onLogin }) => {
                         placeholder="Email Address"
                         required
                         style={{
-                            padding: '15px',
-                            fontSize: '1.2rem',
-                            fontFamily: 'sans-serif',
-                            border: '1px solid #ccc',
-                            borderRadius: '5px',
-                            backgroundColor: 'rgba(255,255,255,0.5)',
+                            padding: '12px 0',
+                            fontSize: '1.1rem',
+                            border: 'none',
+                            borderBottom: '1px solid rgba(44, 36, 27, 0.2)',
+                            backgroundColor: 'transparent',
+                            outline: 'none',
+                            color: 'var(--color-text)',
+                            transition: 'border-bottom 0.3s'
                         }}
+                        onFocus={(e) => e.target.style.borderBottom = '1px solid var(--color-gold)'}
+                        onBlur={(e) => e.target.style.borderBottom = '1px solid rgba(44, 36, 27, 0.2)'}
                     />
 
                     <input
@@ -117,13 +130,17 @@ const AuthScreen = ({ onLogin }) => {
                         placeholder="Password"
                         required
                         style={{
-                            padding: '15px',
-                            fontSize: '1.2rem',
-                            fontFamily: 'sans-serif',
-                            border: '1px solid #ccc',
-                            borderRadius: '5px',
-                            backgroundColor: 'rgba(255,255,255,0.5)',
+                            padding: '12px 0',
+                            fontSize: '1.1rem',
+                            border: 'none',
+                            borderBottom: '1px solid rgba(44, 36, 27, 0.2)',
+                            backgroundColor: 'transparent',
+                            outline: 'none',
+                            color: 'var(--color-text)',
+                            transition: 'border-bottom 0.3s'
                         }}
+                        onFocus={(e) => e.target.style.borderBottom = '1px solid var(--color-gold)'}
+                        onBlur={(e) => e.target.style.borderBottom = '1px solid rgba(44, 36, 27, 0.2)'}
                     />
 
                     {!isLogin && (
@@ -134,34 +151,41 @@ const AuthScreen = ({ onLogin }) => {
                             placeholder="Your Romantic Name (e.g. Juliet)"
                             required
                             style={{
-                                padding: '15px',
-                                fontSize: '1.2rem',
-                                fontFamily: 'sans-serif',
-                                border: '1px solid #ccc',
-                                borderRadius: '5px',
-                                backgroundColor: 'rgba(255,255,255,0.5)',
+                                padding: '12px 0',
+                                fontSize: '1.1rem',
+                                border: 'none',
+                                borderBottom: '1px solid rgba(44, 36, 27, 0.2)',
+                                backgroundColor: 'transparent',
+                                outline: 'none',
+                                color: 'var(--color-text)',
+                                transition: 'border-bottom 0.3s'
                             }}
+                            onFocus={(e) => e.target.style.borderBottom = '1px solid var(--color-gold)'}
+                            onBlur={(e) => e.target.style.borderBottom = '1px solid rgba(44, 36, 27, 0.2)'}
                         />
                     )}
 
-                    <button
+                    <motion.button
+                        whileHover={{ scale: 1.02, backgroundColor: '#a63e2d' }}
+                        whileTap={{ scale: 0.98 }}
                         type="submit"
                         disabled={loading}
                         style={{
-                            marginTop: '10px',
+                            marginTop: '20px',
                             backgroundColor: 'var(--color-accent)',
                             color: 'white',
-                            padding: '15px 30px',
-                            fontSize: '1.2rem',
-                            borderRadius: '5px',
-                            border: 'none',
+                            padding: '15px',
+                            fontSize: '1.1rem',
+                            borderRadius: '2px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.15em',
+                            boxShadow: '0 4px 15px rgba(138, 51, 36, 0.3)',
                             cursor: loading ? 'wait' : 'pointer',
-                            opacity: loading ? 0.7 : 1,
-                            transition: 'opacity 0.3s'
+                            opacity: loading ? 0.7 : 1
                         }}
                     >
-                        {loading ? "Processing..." : (isLogin ? "Enter" : "Register")}
-                    </button>
+                        {loading ? "Approaching..." : (isLogin ? "Enter the Registry" : "Register Name")}
+                    </motion.button>
                 </form>
 
                 <p style={{ marginTop: '20px', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => setIsLogin(!isLogin)}>

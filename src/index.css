@@ -5,49 +5,54 @@
   --color-bg: #fdfbf7;
   --color-text: #2c241b;
   --color-accent: #8a3324;
-  /* Wax seal red */
-  --color-shoebox: #4a3b2a;
-  /* Leather brown */
-  --color-shoebox-light: #5e4b35;
-  --color-shoebox-text: #e6dace;
+  --color-shoebox: #3a2e20;
+  --color-shoebox-light: #524231;
+  --color-shoebox-text: #f0e6d2;
+  --color-gold: #c5a059;
 
   /* Fonts */
   --font-ui: 'Georgia', 'Times New Roman', serif;
   --font-heading: 'Georgia', 'Times New Roman', serif;
-  /* UI Headings */
   --font-letter: 'Pinyon Script', cursive;
-  /* The actual letter text */
   --font-handwriting: 'Mrs Saint Delafield', cursive;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 body {
   margin: 0;
   padding: 0;
   background-color: var(--color-bg);
+  background-image: url('/paper_texture.jpg');
+  background-size: cover;
+  background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-ui);
   overflow: hidden;
-  /* For app-like feel */
-  background-image:
-    radial-gradient(#e6d0b3 1px, transparent 1px),
-    radial-gradient(#e6d0b3 1px, transparent 1px);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
-  /* Caramel texture overlay simulation */
+  height: 100vh;
+}
+
+/* Transitions */
+* {
+  transition: all 0.2s ease-out;
 }
 
 /* Scrollbar styling for a vintage feel */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-shoebox);
-  border-radius: 4px;
+  background: var(--color-shoebox-light);
+  border-radius: 10px;
 }
 
 h1,
@@ -56,6 +61,7 @@ h3 {
   font-family: var(--font-heading);
   font-weight: 400;
   margin: 0;
+  letter-spacing: 0.05em;
 }
 
 button {
@@ -63,4 +69,5 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  outline: none;
 }
