@@ -63,7 +63,7 @@ const AuthScreen = ({ onLogin }) => {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: 'var(--color-bg)',
-            backgroundImage: `url('/paper_texture.jpg')`,
+            backgroundImage: `url('./paper_texture.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
         }}>

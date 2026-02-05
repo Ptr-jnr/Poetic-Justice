@@ -27,7 +27,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--color-bg);
-  background-image: url('/paper_texture.jpg');
+  background-image: url('./paper_texture.jpg');
   background-size: cover;
   background-attachment: fixed;
   color: var(--color-text);

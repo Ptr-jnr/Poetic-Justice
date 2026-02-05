@@ -63,7 +63,7 @@ const Letter = ({ letter, onClose }) => {
                         padding: '60px',
                         position: 'relative',
                         transformOrigin: 'top center',
-                        backgroundImage: `url('/paper_texture.jpg')`,
+                        backgroundImage: `url('./paper_texture.jpg')`,
                         backgroundSize: 'cover',
                         border: '1px solid #c2a685',
                         boxShadow: '0 20px 50px rgba(0,0,0,0.3)',

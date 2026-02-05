@@ -139,7 +139,7 @@ function App() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundImage: "url('/paper_texture.jpg')",
+        backgroundImage: "url('./paper_texture.jpg')",
         backgroundSize: 'cover'
       }}>
         <motion.div

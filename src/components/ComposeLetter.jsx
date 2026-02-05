@@ -35,7 +35,7 @@ const ComposeLetter = ({ onSend, onCancel }) => {
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
-                backgroundImage: `url('/paper_texture.jpg')`,
+                backgroundImage: `url('./paper_texture.jpg')`,
                 backgroundSize: 'cover',
                 border: '1px solid #c2a685',
             }}
