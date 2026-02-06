@@ -5,6 +5,7 @@ import ShoeBox from './components/ShoeBox';
 import Letter from './components/Letter';
 import ComposeLetter from './components/ComposeLetter';
 import AuthScreen from './components/AuthScreen';
+import SecurityModal from './components/SecurityModal';
 import './index.css';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   const [viewMode, setViewMode] = useState('read'); // 'read' | 'compose'
   const [selectedLetter, setSelectedLetter] = useState(null);
   const [activeTab, setActiveTab] = useState('inbox'); // 'inbox' | 'sent'
+  const [showSecurityModal, setShowSecurityModal] = useState(false);
 
   const [letters, setLetters] = useState([]);
 
@@ -216,6 +218,7 @@ function App() {
         setActiveTab={setActiveTab}
         username={username}
         onSignOut={() => supabase.auth.signOut()}
+        onOpenSecurity={() => setShowSecurityModal(true)}
       />
 
       <div style={{
@@ -238,6 +241,11 @@ function App() {
           <Letter letter={selectedLetter} onClose={() => setSelectedLetter(null)} />
         )}
       </div>
+
+      <SecurityModal
+        isOpen={showSecurityModal}
+        onClose={() => setShowSecurityModal(false)}
+      />
     </div>
   );
 }

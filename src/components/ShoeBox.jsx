@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const ShoeBox = ({ letters, onSelectLetter, selectedLetterId, onCompose, activeTab, setActiveTab, username, onSignOut }) => {
+const ShoeBox = ({ letters, onSelectLetter, selectedLetterId, onCompose, activeTab, setActiveTab, username, onSignOut, onOpenSecurity }) => {
     return (
         <div className="shoebox-container" style={{
             width: '320px',
@@ -267,6 +267,27 @@ const ShoeBox = ({ letters, onSelectLetter, selectedLetterId, onCompose, activeT
                         </p>
                     </div>
                 </div>
+
+                <motion.button
+                    whileHover={{ backgroundColor: 'rgba(197, 160, 89, 0.1)' }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={onOpenSecurity}
+                    style={{
+                        width: '100%',
+                        padding: '8px',
+                        backgroundColor: 'transparent',
+                        border: '1px solid rgba(197, 160, 89, 0.3)',
+                        color: 'rgba(197, 160, 89, 0.6)',
+                        borderRadius: '2px',
+                        fontSize: '0.8rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.15em',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                    }}
+                >
+                    Change Cipher
+                </motion.button>
 
                 <motion.button
                     whileHover={{ backgroundColor: 'rgba(197, 160, 89, 0.1)' }}
